@@ -66,10 +66,6 @@ model_ham_spam = pickle.load(open('model_ham_spam.pkl','rb'))
 tfidf_priority = pickle.load(open('vectoriser_priority.pkl', 'rb'))
 model_priority = pickle.load(open('model_priority.pkl', 'rb'))
 
-# load the vectoriser and model for tone
-cv_tone = pickle.load(open('vectoriser_tone.pkl', 'rb'))
-model_tone = pickle.load(open('model_tone.pkl', 'rb'))
-
 #-------------------------------------------------------------------------------------------------------------------------
 
 # making the layout wide
@@ -97,19 +93,16 @@ if selected == 'Home':
         vector_mail = tfidf_class.transform([transformed_mail])
         vector_mail_ham_spam = tfidf_ham_spam.transform([transformed_mail])
         vector_priority = tfidf_priority.transform([transformed_mail])
-        vector_tone = cv_tone.transform([transformed_mail])
 
         # 3. Convert the sparse matrix to a dense array
         vector_mail_dense = vector_mail.toarray()
         vector_mail_ham_spam_dense = vector_mail_ham_spam.toarray()
         vector_mail_priority_dense = vector_priority.toarray()
-        vector_mail_tone_dense = vector_tone.toarray()
 
         # 4. Predict
         result = model_class.predict(vector_mail_dense)[0]
         result_2 = model_ham_spam.predict(vector_mail_ham_spam_dense)[0]
         result_3 = model_priority.predict(vector_mail_priority_dense)[0]
-        result_4 = model_tone.predict(vector_mail_tone_dense)[0]
 
         # 5. Display
         st.header('Type of the mail:')
@@ -139,17 +132,6 @@ if selected == 'Home':
             st.markdown('<p style="font-size:24px;">Low, can be ignored</p>', unsafe_allow_html=True)
         elif result_3 == 2:
             st.markdown('<p style="font-size:24px;">Medium, Go throught the mail, could be important</p>', unsafe_allow_html=True)
-            
-        # 8. Display Tone
-        st.header('Tone:')
-        if result_4 == 0:
-            st.markdown('<p style="font-size:24px;">Complaint</p>', unsafe_allow_html=True)
-        if result_4 == 1:
-            st.markdown('<p style="font-size:24px;">Enquiry</p>', unsafe_allow_html=True)
-        if result_4 == 2:
-            st.markdown('<p style="font-size:24px;">Happy</p>', unsafe_allow_html=True)
-        if result_4 == 3:
-            st.markdown('<p style="font-size:24px;">Neutral</p>', unsafe_allow_html=True)
 
 
 if selected == 'About us':
